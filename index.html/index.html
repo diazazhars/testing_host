@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Buka Ya — Random</title>
+  <style>
+    body { font-family: Inter, system-ui, sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; background: linear-gradient(135deg,#FFFBF2 0%, #FFF0F6 100%); }
+    .card { background:white; padding:28px; border-radius:18px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); width:360px; text-align:center; }
+    input, select { width:100%; padding:10px; margin-top:10px; border-radius:8px; border:1px solid #eee; }
+    button { margin-top:12px; padding:10px 18px; border-radius:12px; border:none; cursor:pointer; font-weight:600; }
+    .btn-primary { background: linear-gradient(90deg,#FF7A9F,#FFB199); color:white; }
+    .message { margin-top:18px; min-height:64px; padding:12px; border-radius:10px; background:#fff7f9; box-shadow: inset 0 1px 0 rgba(255,255,255,0.6); font-size:15px; }
+    .sparkle { display:inline-block; transform-origin:center; animation:pop 900ms infinite ease-in-out; }
+    @keyframes pop { 0% { transform:scale(1);} 50% { transform:scale(1.08);} 100% { transform:scale(1);} }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Hai Cantik <span class="sparkle">☺️</span></h2>
+    <input id="name" placeholder="Tulis nama (mis. Sinta)" />
+    <select id="mood">
+      <option value="random">Gaya acak</option>
+      <option value="cute">Manis & lucu</option>
+      <option value="sincere">Tulus & serius</option>
+      <option value="funny">Lucu & santai</option>
+    </select>
+    <button class="btn-primary" id="btn">Ungkapkan</button>
+    <div class="message" id="result">Tekan tombol untuk membuat pesan.</div>
+  </div>
+
+  <script>
+    const templates = {
+      cute: [
+        "Hai {name} 💖, setiap aku lihat kamu, rasanya dunia jadi lebih manis.",
+        "{name}, boleh aku ikut tersenyum bareng kamu hari ini? 😊"
+      ],
+      sincere: [
+        "{name}, aku ingin jujur: aku ingin memperbaiki semua nya dari awal, Aku ingin serius dan aku akan menepati janji ku.",
+        "Aku ingin serius dan aku akan menepati janji ku, {name}."
+      ],
+      funny: [
+        "Hei {name}, maaf aku gak bisa ngasih kamu apa-apa.",
+        "{name}, Lagi males mikir, tapi kepikiran kamu nggak capek-capek."
+      ],
+      random: [
+        "Aku nggak pandai kata-kata, tapi aku tahu: aku suka kamu, {name}.",
+        "{name}, terima kasih sudah jadi diri kamu sendiri. Itu sudah cukup membuatku bahagia.",
+        "Kadang aku malu bilang ini, tapi aku ingin selalu ada buat kamu, {name}."
+      ]
+    };
+
+    const btn = document.getElementById('btn');
+    const nameInput = document.getElementById('name');
+    const mood = document.getElementById('mood');
+    const result = document.getElementById('result');
+
+    function pick(templateArray, name) {
+      const t = templateArray[Math.floor(Math.random()*templateArray.length)];
+      return t.replace('{name}', name || 'kamu');
+    }
+
+    btn.addEventListener('click', () => {
+      const name = nameInput.value.trim() || 'kamu';
+      const style = mood.value;
+      let pool = templates[style] || [].concat(...Object.values(templates));
+      // Slight mix: add some from other pools when random
+      if (style === 'random') {
+        pool = [...templates.random, ...templates.cute, ...templates.sincere];
+      }
+      const message = pick(pool, name);
+      // small typewriter effect
+      result.textContent = "";
+      let i = 0;
+      const speed = 24;
+      const timer = setInterval(() => {
+        result.textContent += message[i++] || '';
+        if (i > message.length) {
+          clearInterval(timer);
+        }
+      }, speed);
+    });
+  </script>
+</body>
+</html>
